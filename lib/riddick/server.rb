@@ -60,6 +60,11 @@ module Riddick
 
     # Render index page with all translations.
     get '/' do
+      if params[:selected_locale].present?
+        I18n.locale = params[:selected_locale]
+      else
+        params[:selected_locale] = I18n.locale.to_s
+      end
       predefined = Riddick::Backends.simple.translations
       custom = Riddick::Backends.key_value.translations
       @translations = predefined.merge custom
@@ -68,12 +73,23 @@ module Riddick
 
     # Render index page with default translations only.
     get '/default' do
+      if params[:selected_locale].present?
+        I18n.locale = params[:selected_locale]
+      else
+        params[:selected_locale] = I18n.locale.to_s
+      end
       @translations = Riddick::Backends.simple.translations
       erb :index
     end
 
     # Render index page with custom translations only.
     get '/my' do
+      if params[:selected_locale].present?
+        I18n.locale = params[:selected_locale]
+      else
+        params[:selected_locale] = I18n.locale.to_s
+      end
+
       @translations = Riddick::Backends.key_value.translations
       erb :index
     end
@@ -90,6 +106,7 @@ module Riddick
       else
         session[:flash_error] = t('notice.set.error', 'Error: either path or translation is empty!')
       end
+      #redirect my_url + "?selected_locale=" + params[:selected_locale]
       redirect my_url
     end
 
